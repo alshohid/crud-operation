@@ -1,11 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Crud Operation</title>
-</head>
-<body>
-    <h1>We have to learn about Crud operation </h1>
-</body>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/milligram/1.4.1/milligram.css"
+    />
+  </head>
+  <body>
+   <div class="container">
+ 
+     <a href="createProduct.html">Create Product </a>
+   </div>
+        <div id ="loader" class=" loading d-none"> </div>
+    
+    <div class="container">
+      <div class="row">
+        <table>
+            <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Product Code</th>
+                <th>Unit Price</th>
+                <th>Qty</th>
+                <th>Total Price</th>
+                <th>Created Date</th>
+                <th>Delete</th>
+                <th>Update</th>
+            </tr>
+            </thead>
+            <tbody id="itemList">
+            </tbody>
+        </table>
+      </div>
+    </div>
+
+    <script src="js/axios.min.js"></script>
+    <script>
+      async function getList() {
+        document.getElementById('loader').classList.remove('d-none');
+        let url = 'https://crud.teamrabbil.com/api/v1/ReadProduct'
+
+        let res = await axios.get(url)
+        if (res.status === 200) {
+          var list = res.data ['data'];
+          console.log(list)
+          list.forEach((item) => {
+            document.getElementById('itemList').innerHTML += `<tr>
+                                     <td>${item['ProductName']}</td>
+                                     <td>${item['ProductCode']}</td>
+                                     <td>${item['UnitPrice']}</td>
+                                     <td>${item['Qty']}</td>
+                                     <td>${item['TotalPrice']}</td>
+                                     <td>${item['CreatedDate']}</td>
+                                     <td><button onclick="deleteItem('${item['_id']}') ">Delete</button></td>
+                                     <td><button onclick="updateProduct('${item['_id']}')">Update</button></td>
+                            </tr>`
+          })
+        } else {
+          alert('vai Data ashe nai , vul korcis valo kore code kor')
+        }
+      }
+
+      async function deleteItem(id){
+
+                let url = ` https://crud.teamrabbil.com/api/v1/DeleteProduct/${id}`;
+               let res=  await axios.get(url);
+               if(res.status ===200){
+                document.getElementById('itemList').innerHTML = ' ';
+                await getList();
+               }
+
+      }
+async function updateProduct (id){
+     window.location=`updateProduct.html?id=${id}`
+}
+
+      getList()
+    </script>
+  </body>
 </html>
